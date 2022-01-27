@@ -1,0 +1,18 @@
+{
+  "minVersion": "0.8",
+  "required": true,
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "greem.mixins.refmap.json",
+  "package": "net.greemdev.mod.mixin",
+  "mixins": [
+    "ItemStackMixin",
+    "EnchantmentHelperMixin",
+    "EnchantmentMixin"
+  ],
+  "client": [
+    "MinecraftMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
