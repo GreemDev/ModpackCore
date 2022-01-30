@@ -1,17 +1,16 @@
 package net.greemdev.mod.command
 
-import net.greemdev.mod.util.CommandBuilder
+import net.greemdev.mod.command.api.ModCommand
 
 class CoreCommand : ModCommand("core") {
     init {
-        subLiterals(
-            NbtCommand(),
-            GamemodeCommand(),
-            EnchantCommand()
-        )
-    }
-
-    override fun CommandBuilder.modifyLiteral() {
-        requires { hasPermission(2) }
+        literal {
+            requires { hasPermission(2) }
+            then(
+                NbtCommand(),
+                GamemodeCommand(),
+                EnchantCommand()
+            )
+        }
     }
 }

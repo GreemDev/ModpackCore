@@ -1,67 +1,66 @@
 package net.greemdev.mod.command
 
-import net.greemdev.mod.util.CommandBuilder
-import net.greemdev.mod.util.success
-import net.greemdev.mod.util.textComponent
+import net.greemdev.mod.command.api.*
+import net.greemdev.mod.util.*
 import net.minecraft.ChatFormatting
 import net.minecraft.Util
-import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.arguments.EntityArgument
 import net.minecraft.world.level.GameRules
 import net.minecraft.world.level.GameType
 import net.minecraft.world.level.GameType.*
 
 class GamemodeCommand : ModCommand("gamemode") {
-    override fun CommandBuilder.modifyLiteral() {
-        thenCommand("c") {
-            executes(self(CREATIVE))
-            thenArgument("target", EntityArgument.players()) {
-                executes(others(CREATIVE))
+    init {
+        literal {
+            then("c") {
+                executes(self(CREATIVE))
+                then("target", arg.playerEntities()) {
+                    executes(others(CREATIVE))
+                }
             }
-        }
-        thenCommand("s") {
-            executes(self(DEFAULT_MODE))
-            thenArgument("target", EntityArgument.players()) {
-                executes(others(DEFAULT_MODE))
+            then("s") {
+                executes(self(DEFAULT_MODE))
+                then("target", arg.playerEntities()) {
+                    executes(others(DEFAULT_MODE))
+                }
             }
-        }
-        thenCommand("a") {
-            executes(self(ADVENTURE))
-            thenArgument("target", EntityArgument.players()) {
-                executes(others(ADVENTURE))
+            then("a") {
+                executes(self(ADVENTURE))
+                then("target", arg.playerEntities()) {
+                    executes(others(ADVENTURE))
+                }
             }
-        }
-        thenCommand("sp") {
-            executes(self(SPECTATOR))
-            thenArgument("target", EntityArgument.players()) {
-                executes(others(SPECTATOR))
+            then("sp") {
+                executes(self(SPECTATOR))
+                then("target", arg.playerEntities()) {
+                    executes(others(SPECTATOR))
+                }
             }
-        }
-        GameType.values().forEach {
-            thenCommand(it.getName()) {
-                executes(self(it))
-                thenArgument("target", EntityArgument.players()) {
-                    executes(others(it))
+            GameType.values().forEach {
+                then(it.getName()) {
+                    executes(self(it))
+                    then("target", arg.playerEntities()) {
+                        executes(others(it))
+                    }
                 }
             }
         }
     }
 
-    private fun colorFromGameMode(gamemode: GameType): ChatFormatting = if (gamemode == GameType.SURVIVAL)
-        ChatFormatting.DARK_RED
-    else if (gamemode == GameType.ADVENTURE)
-        ChatFormatting.GOLD
-    else if (gamemode.isCreative)
-        ChatFormatting.AQUA
-    else ChatFormatting.DARK_AQUA
+    private fun colorFromGameType(gameType: GameType): ChatFormatting = when (gameType) {
+        SURVIVAL -> ChatFormatting.DARK_RED
+        ADVENTURE -> ChatFormatting.GOLD
+        CREATIVE -> ChatFormatting.AQUA
+        else -> ChatFormatting.DARK_AQUA
+    }
 
     private fun gamemodeChangedText(gameType: GameType) =
         textComponent("Your gamemode has been changed to ") {
             withStyle(ChatFormatting.GRAY)
             append(textComponent(gameType.getName().replaceFirstChar(Char::uppercase)) {
-                withStyle(colorFromGameMode(gameType))
+                withStyle(colorFromGameType(gameType))
             })
-            append(textComponent(".") { withStyle(ChatFormatting.RESET) })
+            append(textComponent(".") { withStyle(ChatFormatting.GRAY) })
         }
 
     fun self(gameType: GameType) = run { ctx ->
@@ -71,7 +70,7 @@ class GamemodeCommand : ModCommand("gamemode") {
     }
 
     fun others(gameType: GameType) = run { ctx ->
-        val players = EntityArgument.getPlayers(ctx, "target")
+        val players = ctx.argument("target", EntityArgument::getPlayers)
             .filter { it.setGameMode(gameType) }
         if (ctx.source.level.gameRules.getBoolean(GameRules.RULE_SENDCOMMANDFEEDBACK))
             players.forEach {
@@ -80,7 +79,7 @@ class GamemodeCommand : ModCommand("gamemode") {
 
         ctx.success(textComponent("Changed the gamemode of ") {
             withStyle(ChatFormatting.GRAY)
-            append(textComponent("${players.size} ${"player".apply { if (players.size != 1) plus("s") }}") {
+            append(textComponent("${players.size} ${"player".quantify(players.size)}") {
                 withStyle(ChatFormatting.RED, ChatFormatting.BOLD)
             })
             append(textComponent(".") { withStyle(ChatFormatting.GRAY) })

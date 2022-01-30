@@ -7,10 +7,13 @@
   "mixins": [
     "ItemStackMixin",
     "EnchantmentHelperMixin",
-    "EnchantmentMixin"
+    "MendingEnchantmentMixin",
+    "EnchantmentMixin",
+    "PotionItemMixin"
   ],
   "client": [
-    "MinecraftMixin"
+    "MinecraftMixin",
+    "PlayerRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

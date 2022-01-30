@@ -1,6 +1,12 @@
 @file:JvmName("MiscUtil")
 package net.greemdev.mod.util
 
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import net.minecraft.world.entity.LivingEntity
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.ItemStack
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.apache.logging.log4j.message.MessageFactory
@@ -17,7 +23,11 @@ fun String.quantify(quantity: Number, useES: Boolean = false, prefixQuantity: Bo
     else this
 }
 
-fun<T> Collection<T>.sizeIsExactly(size: Int): Boolean = this.size == size
+/**
+ * Returns the item in the main hand, or the item in the offhand if there is no item in the main hand.
+ */
+val LivingEntity.heldItem: ItemStack
+    get() = if (!mainHandItem.isEmpty) mainHandItem else offhandItem
 
 fun randomUuid() = UUID.randomUUID()
 fun randomShortUuid() = randomUuid().shorten()
@@ -27,7 +37,7 @@ fun String.parseUUID(): UUID? {
         UUID.fromString(this)
     } ?: tryOrNull {
         val newBuffer = ByteBuffer.wrap(Base64.getUrlDecoder().decode("$this=="))
-        return@tryOrNull UUID(newBuffer.long, newBuffer.long)
+        UUID(newBuffer.long, newBuffer.long)
     }
 }
 

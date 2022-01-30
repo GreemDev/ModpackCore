@@ -2,23 +2,16 @@ package net.greemdev.mod.init
 
 import net.greemdev.mod.GreemMod
 import net.greemdev.mod.command.CoreCommand
-import net.greemdev.mod.command.NbtCommand
 import net.greemdev.mod.item.ToolReforgerItem
-import net.greemdev.mod.util.command
-import net.minecraft.commands.arguments.EntityArgument
-import net.minecraft.commands.arguments.coordinates.BlockPosArgument
 import net.minecraft.core.particles.ParticleType
 import net.minecraft.world.item.Item
-import net.minecraft.world.level.GameType
 import net.minecraftforge.event.RegisterCommandsEvent
 import net.minecraftforge.eventbus.api.IEventBus
 import net.minecraftforge.registries.DeferredRegister
 import net.minecraftforge.registries.ForgeRegistries
 import net.minecraftforge.registries.IForgeRegistry
 import net.minecraftforge.registries.IForgeRegistryEntry
-import thedarkcolour.kotlinforforge.forge.FORGE_BUS
-import thedarkcolour.kotlinforforge.forge.MOD_BUS
-import thedarkcolour.kotlinforforge.forge.registerObject
+import thedarkcolour.kotlinforforge.forge.*
 import kotlin.properties.ReadOnlyProperty
 
 fun register(vararg holders: RegistryHolder<*>) = holders.forEach { it.init(MOD_BUS) }

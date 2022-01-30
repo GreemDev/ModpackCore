@@ -30,7 +30,7 @@ object NBTUtil {
         }
 
         fun save(json: JsonObject): String {
-            val fileName = "nbtExport-${randomShortUuid()}.json"
+            val fileName = "${randomShortUuid()}.json"
             val outputFile = File("exportedNBT", fileName)
             val dir = outputFile.parentFile
 

@@ -21,10 +21,6 @@ public abstract class ItemStackMixin {
 
     @Shadow private CompoundTag tag;
 
-    private ItemStack curr() {
-        return (ItemStack) (Object) this;
-    }
-
     /**
      * @author GreemDev
      * @reason Fucky storage
